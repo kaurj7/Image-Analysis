@@ -8,6 +8,255 @@ import time
 import sys
 
 
+def erosion(classNames, erosionList):
+
+    for x in range(len(erosionList)):
+        cntr = 1
+        for eachImage in (erosionList[i]):
+            height, width = eachImage.shape
+
+            newErodedImage = np.zeros((height, width), dtype=np.uint8)
+
+            k = 7
+            element = np.ones((k, k), dtype=np.uint8)
+            constant = (k - 1) // 2
+
+            for i in range(constant, height - constant):
+                for j in range(constant, width - constant):
+                    temp = eachImage[i - constant:i + constant + 1, j - constant:j + constant + 1]
+                    x = temp * element
+                    newErodedImage[i, j] = np.min(x)
+
+            cv2.imwrite(config["saveErosionImages"] + classNames[i] + str(cntr) + ".bmp", eachImage)
+            cntr += 1
+
+
+def dilation(classNames, dilationList):
+
+    for x in range(len(dilationList)):
+        cntr = 1
+        for eachImage in (dilationList[i]):
+            height, width = eachImage.shape
+
+            newDilatedImage = np.zeros((height, width), dtype=np.uint8)
+
+            # element = np.array([[0,1,0], [1,1,1], [0,1,0]])
+            element = np.array([[1, 1, 1], [1, 1, 1], [1, 1, 1]])
+            constant = 1
+
+            for i in range(constant, height - constant):
+                for j in range(constant, width - constant):
+                    temp = eachImage[i - constant:i + constant + 1, j - constant:j + constant + 1]
+                    x = temp * element
+                    newDilatedImage[i, j] = np.max(x)
+
+            cv2.imwrite(config["saveDilationImages"] + classNames[i] + str(cntr) + ".bmp", eachImage)
+            cntr += 1
+
+
+def compassOperatorWithEigth(classNames, compassListEight, k1, k2, k3, k4, k5, k6, k7, k8):
+
+    for x in range(len(compassListEight)):
+        cntr = 1
+        for eachImage in (compassListEight[i]):
+            height, width = eachImage.shape
+
+            newgradientImage = np.zeros((height, width))
+
+            for i in range(1, height - 1):
+                for j in range(1, width - 1):
+                    k1Grad = (k1[0, 0] * eachImage[i - 1, j - 1]) + \
+                     (k1[0, 1] * eachImage[i - 1, j]) + \
+                     (k1[0, 2] * eachImage[i - 1, j + 1]) + \
+                     (k1[1, 0] * eachImage[i, j - 1]) + \
+                     (k1[1, 1] * eachImage[i, j]) + \
+                     (k1[1, 2] * eachImage[i, j + 1]) + \
+                     (k1[2, 0] * eachImage[i + 1, j - 1]) + \
+                     (k1[2, 1] * eachImage[i + 1, j]) + \
+                     (k1[2, 2] * eachImage[i + 1, j + 1])
+
+                    k2Grad = (k2[0, 0] * eachImage[i - 1, j - 1]) + \
+                     (k2[0, 1] * eachImage[i - 1, j]) + \
+                     (k2[0, 2] * eachImage[i - 1, j + 1]) + \
+                     (k2[1, 0] * eachImage[i, j - 1]) + \
+                     (k2[1, 1] * eachImage[i, j]) + \
+                     (k2[1, 2] * eachImage[i, j + 1]) + \
+                     (k2[2, 0] * eachImage[i + 1, j - 1]) + \
+                     (k2[2, 1] * eachImage[i + 1, j]) + \
+                     (k2[2, 2] * eachImage[i + 1, j + 1])
+
+                    k3Grad = (k3[0, 0] * eachImage[i - 1, j - 1]) + \
+                     (k3[0, 1] * eachImage[i - 1, j]) + \
+                     (k3[0, 2] * eachImage[i - 1, j + 1]) + \
+                     (k3[1, 0] * eachImage[i, j - 1]) + \
+                     (k3[1, 1] * eachImage[i, j]) + \
+                     (k3[1, 2] * eachImage[i, j + 1]) + \
+                     (k3[2, 0] * eachImage[i + 1, j - 1]) + \
+                     (k3[2, 1] * eachImage[i + 1, j]) + \
+                     (k3[2, 2] * eachImage[i + 1, j + 1])
+
+                    k4Grad = (k4[0, 0] * eachImage[i - 1, j - 1]) + \
+                     (k4[0, 1] * eachImage[i - 1, j]) + \
+                     (k4[0, 2] * eachImage[i - 1, j + 1]) + \
+                     (k4[1, 0] * eachImage[i, j - 1]) + \
+                     (k4[1, 1] * eachImage[i, j]) + \
+                     (k4[1, 2] * eachImage[i, j + 1]) + \
+                     (k4[2, 0] * eachImage[i + 1, j - 1]) + \
+                     (k4[2, 1] * eachImage[i + 1, j]) + \
+                     (k4[2, 2] * eachImage[i + 1, j + 1])
+
+                    k5Grad = (k5[0, 0] * eachImage[i - 1, j - 1]) + \
+                     (k5[0, 1] * eachImage[i - 1, j]) + \
+                     (k5[0, 2] * eachImage[i - 1, j + 1]) + \
+                     (k5[1, 0] * eachImage[i, j - 1]) + \
+                     (k5[1, 1] * eachImage[i, j]) + \
+                     (k5[1, 2] * eachImage[i, j + 1]) + \
+                     (k5[2, 0] * eachImage[i + 1, j - 1]) + \
+                     (k5[2, 1] * eachImage[i + 1, j]) + \
+                     (k5[2, 2] * eachImage[i + 1, j + 1])
+
+                    k6Grad = (k6[0, 0] * eachImage[i - 1, j - 1]) + \
+                     (k6[0, 1] * eachImage[i - 1, j]) + \
+                     (k6[0, 2] * eachImage[i - 1, j + 1]) + \
+                     (k6[1, 0] * eachImage[i, j - 1]) + \
+                     (k6[1, 1] * eachImage[i, j]) + \
+                     (k6[1, 2] * eachImage[i, j + 1]) + \
+                     (k6[2, 0] * eachImage[i + 1, j - 1]) + \
+                     (k6[2, 1] * eachImage[i + 1, j]) + \
+                     (k6[2, 2] * eachImage[i + 1, j + 1])
+
+                    k7Grad = (k7[0, 0] * eachImage[i - 1, j - 1]) + \
+                     (k7[0, 1] * eachImage[i - 1, j]) + \
+                     (k7[0, 2] * eachImage[i - 1, j + 1]) + \
+                     (k7[1, 0] * eachImage[i, j - 1]) + \
+                     (k7[1, 1] * eachImage[i, j]) + \
+                     (k7[1, 2] * eachImage[i, j + 1]) + \
+                     (k7[2, 0] * eachImage[i + 1, j - 1]) + \
+                     (k7[2, 1] * eachImage[i + 1, j]) + \
+                     (k7[2, 2] * eachImage[i + 1, j + 1])
+
+                    k8Grad = (k8[0, 0] * eachImage[i - 1, j - 1]) + \
+                     (k8[0, 1] * eachImage[i - 1, j]) + \
+                     (k8[0, 2] * eachImage[i - 1, j + 1]) + \
+                     (k8[1, 0] * eachImage[i, j - 1]) + \
+                     (k8[1, 1] * eachImage[i, j]) + \
+                     (k8[1, 2] * eachImage[i, j + 1]) + \
+                     (k8[2, 0] * eachImage[i + 1, j - 1]) + \
+                     (k8[2, 1] * eachImage[i + 1, j]) + \
+                     (k8[2, 2] * eachImage[i + 1, j + 1])
+
+                    # Edge Magnitude
+                    mag = np.sqrt(
+                        pow(k1Grad, 2.0) + pow(k2Grad, 2.0) + pow(k3Grad, 2.0) + pow(k4Grad, 2.0) + pow(k5Grad, 2.0) + pow(
+                            k6Grad, 2.0) + pow(k7Grad, 2.0) + pow(k8Grad, 2.0))
+                    newgradientImage[i - 1, j - 1] = mag
+
+            cv2.imwrite(config["saveCompass8Images"] + classNames[i] + str(cntr) + ".bmp", eachImage)
+            cntr += 1
+
+
+def compassOperatorWithFour(classNames, compassList, k1, k2, k3, k4):
+
+    for x in range(len(compassList)):
+        cntr = 1
+        for eachImage in (compassList[i]):
+            height, width = eachImage.shape
+
+            newgradientImage = np.zeros((height, width))
+
+            for i in range(1, height - 1):
+                for j in range(1, width - 1):
+                    k1Grad = (k1[0, 0] * eachImage[i - 1, j - 1]) + \
+                            (k1[0, 1] * eachImage[i - 1, j]) + \
+                            (k1[0, 2] * eachImage[i - 1, j + 1]) + \
+                            (k1[1, 0] * eachImage[i, j - 1]) + \
+                            (k1[1, 1] * eachImage[i, j]) + \
+                            (k1[1, 2] * eachImage[i, j + 1]) + \
+                            (k1[2, 0] * eachImage[i + 1, j - 1]) + \
+                            (k1[2, 1] * eachImage[i + 1, j]) + \
+                            (k1[2, 2] * eachImage[i + 1, j + 1])
+
+                    k2Grad = (k2[0, 0] * eachImage[i - 1, j - 1]) + \
+                            (k2[0, 1] * eachImage[i - 1, j]) + \
+                            (k2[0, 2] * eachImage[i - 1, j + 1]) + \
+                            (k2[1, 0] * eachImage[i, j - 1]) + \
+                            (k2[1, 1] * eachImage[i, j]) + \
+                            (k2[1, 2] * eachImage[i, j + 1]) + \
+                            (k2[2, 0] * eachImage[i + 1, j - 1]) + \
+                            (k2[2, 1] * eachImage[i + 1, j]) + \
+                            (k2[2, 2] * eachImage[i + 1, j + 1])
+
+                    k3Grad = (k3[0, 0] * eachImage[i - 1, j - 1]) + \
+                            (k3[0, 1] * eachImage[i - 1, j]) + \
+                            (k3[0, 2] * eachImage[i - 1, j + 1]) + \
+                            (k3[1, 0] * eachImage[i, j - 1]) + \
+                            (k3[1, 1] * eachImage[i, j]) + \
+                            (k3[1, 2] * eachImage[i, j + 1]) + \
+                            (k3[2, 0] * eachImage[i + 1, j - 1]) + \
+                            (k3[2, 1] * eachImage[i + 1, j]) + \
+                            (k3[2, 2] * eachImage[i + 1, j + 1])
+
+                    k4Grad = (k4[0, 0] * eachImage[i - 1, j - 1]) + \
+                            (k4[0, 1] * eachImage[i - 1, j]) + \
+                            (k4[0, 2] * eachImage[i - 1, j + 1]) + \
+                            (k4[1, 0] * eachImage[i, j - 1]) + \
+                            (k4[1, 1] * eachImage[i, j]) + \
+                            (k4[1, 2] * eachImage[i, j + 1]) + \
+                            (k4[2, 0] * eachImage[i + 1, j - 1]) + \
+                            (k4[2, 1] * eachImage[i + 1, j]) + \
+                            (k4[2, 2] * eachImage[i + 1, j + 1])
+
+                    # Edge Magnitude
+                    mag = np.sqrt(pow(k1Grad, 2.0) + pow(k2Grad, 2.0) + pow(k3Grad, 2.0) + pow(k4Grad, 2.0))
+                    newgradientImage[i - 1, j - 1] = mag
+
+            cv2.imwrite(config["saveCompass4Images"] + classNames[i] + str(cntr) + ".bmp", eachImage)
+            cntr += 1
+
+
+def prewittAndSobel(classNames, prewittSobelList, prewittHorizontal, prewittVertical, prewittORsobel):
+    for x in range(len(prewittSobelList)):
+        cntr = 1
+        for eachImage in (prewittSobelList[i]):
+            height, width = eachImage.shape
+
+            newgradientImage = np.zeros((height, width))
+
+            for i in range(1, height - 1):
+                for j in range(1, width - 1):
+                    horizontalGrad = (prewittHorizontal[0, 0] * eachImage[i - 1, j - 1]) + \
+                                     (prewittHorizontal[0, 1] * eachImage[i - 1, j]) + \
+                                     (prewittHorizontal[0, 2] * eachImage[i - 1, j + 1]) + \
+                                     (prewittHorizontal[1, 0] * eachImage[i, j - 1]) + \
+                                     (prewittHorizontal[1, 1] * eachImage[i, j]) + \
+                                     (prewittHorizontal[1, 2] * eachImage[i, j + 1]) + \
+                                     (prewittHorizontal[2, 0] * eachImage[i + 1, j - 1]) + \
+                                     (prewittHorizontal[2, 1] * eachImage[i + 1, j]) + \
+                                     (prewittHorizontal[2, 2] * eachImage[i + 1, j + 1])
+
+                    verticalGrad = (prewittVertical[0, 0] * eachImage[i - 1, j - 1]) + \
+                                   (prewittVertical[0, 1] * eachImage[i - 1, j]) + \
+                                   (prewittVertical[0, 2] * eachImage[i - 1, j + 1]) + \
+                                   (prewittVertical[1, 0] * eachImage[i, j - 1]) + \
+                                   (prewittVertical[1, 1] * eachImage[i, j]) + \
+                                   (prewittVertical[1, 2] * eachImage[i, j + 1]) + \
+                                   (prewittVertical[2, 0] * eachImage[i + 1, j - 1]) + \
+                                   (prewittVertical[2, 1] * eachImage[i + 1, j]) + \
+                                   (prewittVertical[2, 2] * eachImage[i + 1, j + 1])
+
+                    # Edge Magnitude
+                    mag = np.sqrt(pow(horizontalGrad, 2.0) + pow(verticalGrad, 2.0))
+                    newgradientImage[i - 1, j - 1] = mag
+
+            if prewittORsobel == "prewitt":
+                cv2.imwrite(config["savePrewittImages"] + classNames[i] + str(cntr) + ".bmp", eachImage)
+                cntr += 1
+
+            else if (prewittORsobel == "sobel"):
+                cv2.imwrite(config["saveSobelImages"] + classNames[i] + str(cntr) + ".bmp", eachImage)
+                cntr += 1
+
+
 def averageFilter(classNames, averageList, kernelSize, config):
 
     startTime = time.time()
@@ -350,6 +599,12 @@ def main():
     medianList = np.copy(classList)
     averageList = np.copy(classList)
 
+    prewittSobelList = np.copy(classList)
+    compassList = np.copy(classList)
+    compassListEight = np.copy(classList)
+    dilationList = np.copy(classList)
+    erosionList = np.copy(classList)
+
 
     # All image processing function calls
     saltPepperTime = saltPepper(classNames, saltPepperList, saltPepperStrength, config)
@@ -369,6 +624,27 @@ def main():
     print("Equalization Histogram time: " + str(int(histEqualizationTime)) + " seconds")
     print("Median filter time: " + str(int(medianTime)) + " seconds")
     print("Average filter time: " + str(int(averageFilterTime)) + " seconds")
+
+    # Project Part2
+    prewittHorizontal = np.array([[-1, 0, 1], [-1, 0, 1], [-1, 0, 1]])
+    prewittVertical = np.array([[-1, -1, -1], [0, 0, 0], [1, 1, 1]])
+
+    sobelHorizontal = np.array([[-1, 0, 1], [-2, 0, 2], [-1, 0, 1]])
+    sobelVertical = np.array([[-1, -2, -1], [0, 0, 0], [1, 2, 1]])
+
+    prewittAndSobel(classNames, prewittSobelList, prewittHorizontal, prewittVertical, "prewitt", config)
+    prewittAndSobel(classNames, prewittSobelList, sobelHorizontal, sobelVertical, "sobel", config)
+
+    k1 = np.array([[-1, 0, 1], [-2, 0, 2], [-1, 0, 1]])
+    k2 = np.array([[-2, -1, 0], [-1, 0, 1], [0, 1, 2]])
+    k3 = np.array([[-1, -2, -1], [0, 0, 0], [1, 2, 1]])
+    k4 = np.array([[0, -1, -2], [1, 0, -1], [2, 1, 0]])
+
+    compassOperatorWithFour(classNames, compassList, k1, k2, k3, k4)
+    compassOperatorWithEigth(classNames, compassListEight, k1, k2, k3, k4, -k1, -k2, -k3, -k4)
+
+    dilation(classNames, dilationList)
+    erosion(classNames, erosionList)
 
 
 if __name__ == "__main__":
